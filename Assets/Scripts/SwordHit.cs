@@ -10,7 +10,7 @@ public class SwordHit : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Enemy" && !wp.isAttacking)
+        if(other.tag == "Enemy" && wp.isAttacking)
         {
             EnemyHealth enemy = other.gameObject.GetComponent<EnemyHealth>();
 

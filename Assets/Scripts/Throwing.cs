@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//Update
 public class Throwing : MonoBehaviour
 {
     [Header("Refrences")]

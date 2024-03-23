@@ -858,13 +858,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52728d94935ba884ba8e5dd6094a2fd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 963194228}
-  attackPoint: {fileID: 653755040}
-  objectToThrow: {fileID: 5261147110232258955, guid: 4a05c36365badf349859f7f734e2c22e, type: 3}
-  totalThrows: 999
-  throwCooldown: 0.1
+  cam: {fileID: 0}
+  attackPoint: {fileID: 0}
+  objectToThrow: {fileID: 0}
+  totalThrows: 0
+  throwCooldown: 0
   throwKey: 323
-  throwForce: 70
+  throwForce: 0
   throwUpwardsForce: 0
 --- !u!1 &705507993
 GameObject:

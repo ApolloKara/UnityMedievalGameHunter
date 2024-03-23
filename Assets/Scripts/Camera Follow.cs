@@ -10,4 +10,4 @@ public class CameraFollow : MonoBehaviour
     {
         transform.position = cameraPosition.position;
     }
-}
+}//Update
