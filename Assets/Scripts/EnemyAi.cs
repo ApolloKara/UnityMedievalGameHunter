@@ -1,21 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class EnemyAi : MonoBehaviour
 {
-
     public NavMeshAgent agent;
-
     public Transform player;
-
     public LayerMask whatIsGround, whatIsPlayer;
 
     [Header("Patrolling")]
-    public Vector3 walkPoint;
-    bool walkPointSet;
     public float walkPointRange;
+    bool walkPointSet;
+    Vector3 walkPoint;
 
     [Header("Attacking")]
     public float timeBetweenAttacks;
@@ -23,7 +18,7 @@ public class EnemyAi : MonoBehaviour
 
     [Header("States")]
     public float sightRange, attackRange;
-    public bool playerInSightRange, playerInAttackRange;
+    bool playerInSightRange, playerInAttackRange;
 
     private void Awake()
     {
@@ -37,33 +32,30 @@ public class EnemyAi : MonoBehaviour
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
-        if(!playerInSightRange && !playerInAttackRange) Patrolling();
-        if(playerInSightRange && !playerInAttackRange) ChasePlayer();
-        if(playerInAttackRange && playerInSightRange) AttackPlayer();
+        if (!playerInSightRange && !playerInAttackRange) Patrolling();
+        if (playerInSightRange && !playerInAttackRange) ChasePlayer();
+        if (playerInAttackRange && playerInSightRange) AttackPlayer();
     }
 
     void Patrolling()
     {
-        if (!walkPointSet) SearchWalkPoint();
+        if (!walkPointSet || Vector3.Distance(transform.position, walkPoint) < 1f)
+            SearchWalkPoint();
 
         if (walkPointSet)
             agent.SetDestination(walkPoint);
-
-        Vector3 distanceToWalkPoint = transform.position - walkPoint;
-        
-        //Walkpoint Reached
-        if (distanceToWalkPoint.magnitude < 5f)
-            walkPointSet = false;
-        
     }
 
     void SearchWalkPoint()
     {
-        //Calculate random point in range
-        float randomZ = Random.Range(-walkPointRange, walkPointRange);
-        float randomX = Random.Range(-walkPointRange, walkPointRange);
+        // Calculate random point within range, but also based on the current position and direction of the enemy
+        float randomAngle = Random.Range(0f, Mathf.PI * 2f);
+        float randomRadius = Random.Range(walkPointRange * 0.5f, walkPointRange);
+        Vector3 randomDirection = new Vector3(Mathf.Sin(randomAngle), 0f, Mathf.Cos(randomAngle));
+        Vector3 randomOffset = randomDirection * randomRadius;
 
-        walkPoint = new Vector3(transform.position.x + randomX, transform.position.z + randomZ);
+        // Set walk point
+        walkPoint = transform.position + randomOffset;
 
         if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
         {
@@ -73,7 +65,15 @@ public class EnemyAi : MonoBehaviour
 
     void ChasePlayer()
     {
-        agent.SetDestination(player.position);
+        // Calculate a random offset within a range around the player's position
+        Vector3 randomOffset = Random.insideUnitSphere * 5f;
+        randomOffset.y = 0f; // Ensure no vertical movement
+
+        // Set the destination to a point near the player, with some randomness
+        Vector3 targetPosition = player.position + randomOffset;
+
+        // Set the destination for the agent
+        agent.SetDestination(targetPosition);
     }
 
     void AttackPlayer()
@@ -83,17 +83,16 @@ public class EnemyAi : MonoBehaviour
 
         transform.LookAt(player);
 
-        if(!alreadyAttacked)
+        if (!alreadyAttacked)
         {
             //Attack Code
-
-
-            ///
+            // ...
 
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
+
     void ResetAttack()
     {
         alreadyAttacked = false;

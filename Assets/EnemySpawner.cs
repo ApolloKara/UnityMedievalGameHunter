@@ -8,17 +8,29 @@ public class EnemySpawner : MonoBehaviour
     public float maxSpawnDelay = 10f; // Maximum delay between spawns
     public int maxEnemiesOnScreen = 5; // Maximum number of enemies allowed on screen at once
 
+    public bool spawnForever = true; // Whether the spawner should keep spawning enemies indefinitely
+    public int totalEnemiesToSpawn = 10; // Number of enemies to spawn if spawnForever is false
+
     private int currentEnemiesOnScreen = 0; // Current number of enemies on screen
+    private int totalEnemiesSpawned = 0; // Total number of enemies spawned
 
     void Start()
     {
-        // Start spawning enemies
-        InvokeRepeating("SpawnEnemy", 0f, Random.Range(minSpawnDelay, maxSpawnDelay));
+        if (spawnForever)
+        {
+            // Start spawning enemies indefinitely
+            InvokeRepeating("SpawnEnemy", 0f, Random.Range(minSpawnDelay, maxSpawnDelay));
+        }
+        else
+        {
+            // Start spawning enemies until totalEnemiesToSpawn is reached
+            InvokeRepeating("SpawnEnemy", 0f, Random.Range(minSpawnDelay, maxSpawnDelay));
+        }
     }
 
     void SpawnEnemy()
     {
-        if (currentEnemiesOnScreen < maxEnemiesOnScreen)
+        if ((spawnForever || totalEnemiesSpawned < totalEnemiesToSpawn) && currentEnemiesOnScreen < maxEnemiesOnScreen)
         {
             // Calculate a random point within a 10f radius from the spawn point
             Vector3 spawnPoint = RandomPointOnGround(transform.position, 10f);
@@ -31,6 +43,13 @@ public class EnemySpawner : MonoBehaviour
             Instantiate(enemyPrefab, spawnPoint, Quaternion.identity);
 
             currentEnemiesOnScreen++;
+            totalEnemiesSpawned++;
+
+            if (!spawnForever && totalEnemiesSpawned >= totalEnemiesToSpawn)
+            {
+                // Stop spawning if totalEnemiesToSpawn is reached
+                CancelInvoke("SpawnEnemy");
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class SwordHit : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class SwordHit : MonoBehaviour
             Debug.Log(other.name + "Hit");
         }
     }
+
+
 
 
   
