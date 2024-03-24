@@ -10,7 +10,7 @@ public class EnemyHealth : MonoBehaviour
     private EnemySpawner enemySpawner;
     private PlayerStats playerStats;
     public int nextLevelReward;
-    public int borricalReward;
+    public int borricalReward; //50 For statues, 15 statues | 2 For Regular
 
     private void Start()
     {
